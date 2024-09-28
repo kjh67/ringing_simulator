@@ -1,0 +1,15 @@
+# Build files
+build/*
+
+# VSCode files
+.vscode/*
+
+# CMake files
+CMakeFiles*
+CMakeCache.txt
+
+# Dev notes
+devlog.md
+
+# Application data
+data/*

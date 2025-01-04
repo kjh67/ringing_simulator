@@ -16,7 +16,7 @@ cmake --build build
 
 # Run tests
 cd build
-ctest
+ctest --verbose --output-on-failure
 
 )
 

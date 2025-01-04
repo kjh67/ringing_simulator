@@ -14,7 +14,6 @@ FetchContent_Declare(
 
 FetchContent_MakeAvailable(googletest)
 
-enable_testing()
 
 
 #
@@ -22,17 +21,17 @@ enable_testing()
 #
 
 add_executable(
-    ringing_simulator_tests
+    liris_tests
     ringing_utils/row.test.cc
+    file_utils/method_lib.test.cc
 )
 
 target_link_libraries(
+    liris_tests
     ringing_utils
     file_utils
-    simulator
     GTest::gtest_main
-    ${LIBXML2_LIBRARIES}
 )
 
 include(GoogleTest)
-gtest_discover_tests(ringing_simulator_tests)
+gtest_discover_tests(liris_tests)

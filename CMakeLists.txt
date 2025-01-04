@@ -22,25 +22,27 @@ add_library(
 add_library(
     file_utils
     src/file_utils/mcf_file.cpp
+    src/file_utils/method_lib.cpp
 )
 target_link_libraries(file_utils ringing_utils ${LIBXML2_LIBRARIES})
 
 # Simulator setup
 add_library(
     simulator
+    src/simulator/simulator.cpp
 )
-target_link_libraries(simulator ringing_utils file_utils ${LIBXML2_LIBRARIES})0
+target_link_libraries(simulator ringing_utils file_utils ${LIBXML2_LIBRARIES})
 
 
 
 # ADD OPTION FOR WHICH INTERFACE TO BUILD (one for each interface that exists), WHETHER TO enable testing
 
 # Executable setup
-option(build-win "Flag to build executable application for Windows")
-option(build-linux "Flag to build executable application for Linux")
+# option(build-win "Flag to build executable application for Windows")
+# option(build-linux "Flag to build executable application for Linux")
 
 
-add_executable(liris)
-target_link_libraries(liris ringing_utils file_utils simulator ${LIBXML2_LIBRARIES})
-
+# add_executable(liris)
+# target_link_libraries(liris ringing_utils file_utils simulator ${LIBXML2_LIBRARIES})
+enable_testing()
 add_subdirectory(tests)

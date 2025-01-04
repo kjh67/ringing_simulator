@@ -1,7 +1,7 @@
 #include "ringing_utils.h"
-#include <libxml2/libxml/xmlversion.h>
-#include <libxml2/libxml/xmlreader.h>
+#include <libxml/parser.h>
 #include <string>
+#include <list>
 
 using std::string;
 using namespace ringing_utils;
@@ -10,12 +10,39 @@ namespace file_utils {
 
 class MCFFile {};
 
-class MethodLibrary {
 
-    MethodLibrary(string file_location);
+// Method Library searching, retrieval, etc
+const string ROOT_LIBRARY_FILEPATH = "/home/khawkins/projects/ringing/ringing_simulator/data/CCCBR_methods.xml";
 
-    Method* SearchLibrary(string method_name, Method* search_subset = nullptr);
-
+enum MethodClass {
+    NONE=0, PLACE, BOB, SLOW_COURSE, TREBLE_BOB, DELIGHT, SURPRISE, ALLIANCE, TREBLE_PLACE, HYBRID, UNCLASSED
 };
+string MethodClassToString(MethodClass m);
+
+struct MethodSearchResult {
+    const char* id;
+    const char* name;
+};
+
+class MethodLibrary {
+    xmlDocPtr library_ptr;
+
+    public:
+        MethodLibrary(string library_path);
+
+        /**
+         * @brief Returns basic identifying information about methods from the library matching the search parameters.
+         * 
+         * @param partial_method_name A lower-case, escaped string to search for in method names, default "" (no filtering).
+         * @param stage Integer method stage, default 0 (no filtering).
+         * @param method_class Enum type indicating the method class, default NONE (no filtering).
+         * @return MethodSearchResult*
+         */
+        std::list<MethodSearchResult> SearchLibrary(string partial_method_name="", int stage=0, MethodClass method_class=NONE);
+        ~MethodLibrary();
+};
+
+class MethodLibraryLoadError {};
+class MethodLibrarySearchError {};
 
 }

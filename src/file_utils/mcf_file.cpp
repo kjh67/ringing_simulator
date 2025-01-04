@@ -1,5 +1,6 @@
-#include "utils.h"
+#include "ringing_utils.h"
 
+namespace file_utils {
 
 class MCF_File
 {
@@ -15,5 +16,7 @@ class MCF_File
 
 // constructor, load MCF file from path
 MCF_File::MCF_File(char* path) {
-
+    counter = 0;
 };
+
+}

@@ -1,8 +1,10 @@
 // Implementation for the Row class
-#include "utils.h"
+#include "ringing_utils.h"
 
+namespace ringing_utils {
 
 // define child classes: make methods virtual to have correct behaviour!
+
 
 class Row3Bit : Row
 {
@@ -15,6 +17,4 @@ class Row4Bit : Row
     // suitable for touches containing methods up to sixteen
 };
 
-
-
-// Define methods of the parent class
+}

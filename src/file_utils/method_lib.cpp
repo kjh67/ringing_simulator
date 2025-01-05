@@ -249,32 +249,32 @@ void MethodLibrary::UpdateLibrary(string file_location, string temp_location) {
     // and another of the 'jump methods' xml, to the temp location
     auto curl_handle = curl_easy_init();
     int success;
-    // success = MethodLibraryReadingRoutines::download_file(curl_handle, CCCBR_LIBRARY_URL, temp_location+lib_rel_location+".zip");
-    // if (success!=0) {
-    //     fprintf(stderr, "Method library could not be downloaded\n");
-    //     throw MethodLibraryUpdateError();
-    // }
-    // success = MethodLibraryReadingRoutines::download_file(curl_handle, CCCBR_JUMPLIB_URL, temp_location+jump_rel_location+".zip");
-    // if (success!=0) {
-    //     fprintf(stderr, "Jump library could not be downloaded\n");
-    //     throw MethodLibraryUpdateError();
-    // }
-    // curl_easy_cleanup(curl_handle);
-    // curl_global_cleanup();
+    success = MethodLibraryReadingRoutines::download_file(curl_handle, CCCBR_LIBRARY_URL, temp_location+lib_rel_location+".zip");
+    if (success!=0) {
+        fprintf(stderr, "Method library could not be downloaded\n");
+        throw MethodLibraryUpdateError();
+    }
+    success = MethodLibraryReadingRoutines::download_file(curl_handle, CCCBR_JUMPLIB_URL, temp_location+jump_rel_location+".zip");
+    if (success!=0) {
+        fprintf(stderr, "Jump library could not be downloaded\n");
+        throw MethodLibraryUpdateError();
+    }
+    curl_easy_cleanup(curl_handle);
+    curl_global_cleanup();
 
-    // // first, part two: unzip the files
-    // success = MethodLibraryReadingRoutines::unzip_file(temp_location+lib_rel_location+".zip", temp_location+lib_rel_location, "CCCBR_methods.xml");
-    // if (success<0) {
-    //     fprintf(stderr, "Method library could not be unzipped\n");
-    //     throw MethodLibraryUpdateError();
-    // }
-    // success = MethodLibraryReadingRoutines::unzip_file(temp_location+jump_rel_location+".zip", temp_location+jump_rel_location, "CCCBR_Jump.xml");
-    // if (success<0) {
-    //     fprintf(stderr, "Method library could not be unzipped\n");
-    //     throw MethodLibraryUpdateError();
-    // }
+    // first, part two: unzip the files
+    success = MethodLibraryReadingRoutines::unzip_file(temp_location+lib_rel_location+".zip", temp_location+lib_rel_location, "CCCBR_methods.xml");
+    if (success<0) {
+        fprintf(stderr, "Method library could not be unzipped\n");
+        throw MethodLibraryUpdateError();
+    }
+    success = MethodLibraryReadingRoutines::unzip_file(temp_location+jump_rel_location+".zip", temp_location+jump_rel_location, "CCCBR_Jump.xml");
+    if (success<0) {
+        fprintf(stderr, "Method library could not be unzipped\n");
+        throw MethodLibraryUpdateError();
+    }
 
-    // fprintf(stdout, "Files downloaded and unzipped\n");
+    fprintf(stdout, "Files downloaded and unzipped\n");
 
 
     // Third: overwrite old library with the method library; then, keep open and add the jump library to the end of the file

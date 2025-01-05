@@ -9,6 +9,10 @@ project(
 find_package(LibXml2 REQUIRED)
 include_directories(include ${LIBXML2_INCLUDE_DIR})
 
+# Include packages for other file handling
+find_package(CURL REQUIRED)
+find_package(LIBZIP REQUIRED IMPORTED_TARGET libzip)
+
 # Ringing Utils setup
 add_library(
     ringing_utils 
@@ -24,14 +28,14 @@ add_library(
     src/file_utils/mcf_file.cpp
     src/file_utils/method_lib.cpp
 )
-target_link_libraries(file_utils ringing_utils ${LIBXML2_LIBRARIES})
+target_link_libraries(file_utils ringing_utils ${LIBXML2_LIBRARIES} CURL::libcurl libzip::zip)
 
 # Simulator setup
 add_library(
     simulator
     src/simulator/simulator.cpp
 )
-target_link_libraries(simulator ringing_utils file_utils ${LIBXML2_LIBRARIES})
+target_link_libraries(simulator ringing_utils file_utils ${LIBXML2_LIBRARIES} CURL::libcurl libzip::zip)
 
 
 

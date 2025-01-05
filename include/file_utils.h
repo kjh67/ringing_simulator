@@ -13,6 +13,8 @@ class MCFFile {};
 
 // Method Library searching, retrieval, etc
 const string ROOT_LIBRARY_FILEPATH = "/home/khawkins/projects/ringing/ringing_simulator/data/CCCBR_methods.xml";
+const string CCCBR_LIBRARY_URL = "https://methods.cccbr.org.uk/xml/CCCBR_methods.xml.zip";
+const string CCCBR_JUMPLIB_URL = "https://methods.cccbr.org.uk/xml/CCCBR_Jump.xml.zip";
 
 enum MethodClass {
     NONE=0, PLACE, BOB, SLOW_COURSE, TREBLE_BOB, DELIGHT, SURPRISE, ALLIANCE, TREBLE_PLACE, HYBRID, UNCLASSED
@@ -40,9 +42,12 @@ class MethodLibrary {
          */
         std::list<MethodSearchResult> SearchLibrary(string partial_method_name="", int stage=0, MethodClass method_class=NONE);
         ~MethodLibrary();
+
+        static void UpdateLibrary(string file_location, string temp_location="");
 };
 
 class MethodLibraryLoadError {};
 class MethodLibrarySearchError {};
+class MethodLibraryUpdateError {};
 
 }

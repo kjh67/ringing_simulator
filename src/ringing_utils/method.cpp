@@ -1,8 +1,6 @@
-#include <string>
 #include <cstring>
 #include "ringing_utils.h"
 
-using std::string;
 namespace ringing_utils {
 
 string MethodClassToString(MethodClass m) {

@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include <string.h>
+#include <cstring>
 #include <stdlib.h>
 
 #include <libxml/xmlmemory.h>
@@ -119,34 +119,6 @@ class MethodLibraryReadingRoutines {
 
 namespace file_utils {
 
-string MethodClassToString(MethodClass m) {
-    switch (m)
-    {
-    case PLACE:
-        return "Place";
-    case BOB:
-        return "Bob";
-    case SLOW_COURSE:
-        return "Slow Course";
-    case TREBLE_BOB:
-        return "Treble Bob";
-    case DELIGHT:
-        return "Delight";
-    case SURPRISE:
-        return "Surprise";
-    case ALLIANCE:
-        return "Alliance";
-    case TREBLE_PLACE:
-        return "Treble Place";
-    case HYBRID:
-        return "Hybrid";
-    case UNCLASSED:
-        return "";
-    default:
-        return "";
-    };
-}
-
 MethodLibrary::MethodLibrary(string library_path) {
     // Initialise the libxml parser and parse the method library
     xmlInitParser();
@@ -212,13 +184,14 @@ std::list<MethodSearchResult> MethodLibrary::SearchLibrary(string partial_method
     int size = (result_nodes) ? result_nodes->nodeNr : 0;
     std::list<MethodSearchResult> result_list = std::list<MethodSearchResult>();
     for(int i = 0; i < size; i++) {
-        //TODO: xpath injection is possible; abort showing the results if the returned nodes are not methods
+        //TODO: xpath injection is possible; maybe abort showing the results if the returned nodes are not methods
         if(result_nodes->nodeTab[i]->type == XML_ELEMENT_NODE) {
             cur = result_nodes->nodeTab[i];
+            int num_children = xmlChildElementCount(cur);
             xmlNodePtr cur_children = cur->children;
             xmlNodePtr nextChild = cur_children->next;
-            for (int j=0; j<xmlChildElementCount(cur); j++) {
-                if (nextChild->type != XML_ELEMENT_NODE) {
+            for (int j=0; j<num_children; j++) {
+                while (nextChild->type != XML_ELEMENT_NODE) {
                     nextChild = nextChild->next;
                 }
                 if (strcmp((const char*) nextChild->name,"title") == 0) {
@@ -236,6 +209,149 @@ std::list<MethodSearchResult> MethodLibrary::SearchLibrary(string partial_method
     xmlXPathFreeContext(xp_context);
     return result_list;
 }
+
+
+Method MethodLibrary::RetrieveMethodInformation(string method_id) {
+    // open the xml file for searching
+    xmlXPathContextPtr xp_context = xmlXPathNewContext(library_ptr);
+    if (xp_context == NULL) {
+        xmlXPathFreeContext(xp_context);
+        throw MethodLibrarySearchError();
+    }
+    if (xmlXPathRegisterNs(xp_context, BAD_CAST "df", BAD_CAST "http://www.cccbr.org.uk/methods/schemas/2007/05/methods") != 0) {
+        xmlXPathFreeContext(xp_context);
+        throw MethodLibrarySearchError();
+    }
+
+    // retrieve the method node using method id
+    string xpath_expression = "/df:collection/df:methodSet/df:method[@id=\""+method_id+"\"]";
+    xmlXPathObjectPtr xpath_result = xmlXPathEvalExpression(BAD_CAST xpath_expression.c_str(), xp_context);
+    if (xpath_result == NULL) {
+        fprintf(stderr, "XPath error, NULL returned.\n");
+        xmlXPathFreeObject(xpath_result);
+        xmlXPathFreeContext(xp_context);
+        throw MethodLibrarySearchError();
+    }
+    if (xpath_result->nodesetval->nodeNr != 1) {
+        fprintf(stderr, "No matching methods found.\n");
+        xmlXPathFreeObject(xpath_result);
+        xmlXPathFreeContext(xp_context);
+        throw MethodLibrarySearchError();
+    }
+
+    // find the MethodSet first, and check the properties from there: then only set below if overridden by the method
+    // since we known the method exists, must be in a methodSet: get this one
+    xpath_expression = "/df:collection/df:methodSet[df:method/@id=\""+method_id+"\"]/df:properties";
+    xmlXPathObjectPtr methodSet_properties = xmlXPathEvalExpression(BAD_CAST xpath_expression.c_str(), xp_context);
+    if (methodSet_properties == NULL) {
+        fprintf(stderr, "XPath error, NULL returned from second expression.\n");
+        xmlXPathFreeObject(xpath_result);
+        xmlXPathFreeObject(methodSet_properties);
+        xmlXPathFreeContext(xp_context);
+        throw MethodLibrarySearchError();
+    }
+    if (methodSet_properties->nodesetval->nodeNr != 1) {
+        fprintf(stderr, "No matching methodSets found.\n");
+        xmlXPathFreeObject(xpath_result);
+        xmlXPathFreeObject(methodSet_properties);
+        xmlXPathFreeContext(xp_context);
+        throw MethodLibrarySearchError();
+    }
+
+    Method to_return;
+    to_return.id = method_id;
+    // first, set properties using the methodSet information
+    xmlNodePtr result_node = methodSet_properties->nodesetval->nodeTab[0];
+    int num_children = xmlChildElementCount(result_node);
+    xmlNodePtr result_children = result_node->children;
+    xmlNodePtr current_child = result_children->next;
+    for (int i=0; i<num_children; i++) {
+        while (current_child->type != XML_ELEMENT_NODE) {
+            current_child = current_child->next;
+        }
+        // set properties of the return struct
+        const char* current_name = (const char*) current_child->name;
+        if (strcmp(current_name, "stage") == 0) {
+            // need to get this from the methodSet
+            to_return.stage = std::stoi((const char*) xmlNodeGetContent(current_child));
+        }
+        else if (strcmp(current_name, "classification") == 0) {
+            // if a property is there, it's only because it's true, I hope!
+            to_return.little = (xmlGetProp(current_child, BAD_CAST "little") != NULL);
+            to_return.differential = (xmlGetProp(current_child, BAD_CAST "differential") != NULL);
+            to_return.plain = (xmlGetProp(current_child, BAD_CAST "plain") != NULL);
+            to_return.treble_dodging = (xmlGetProp(current_child, BAD_CAST "trebleDodging") != NULL);
+            to_return.classification = StringToMethodClass((const char*) xmlNodeGetContent(current_child));
+        }
+        else if (strcmp(current_name, "lengthOfLead") == 0) {
+            to_return.lead_length = std::stoi((const char*) xmlNodeGetContent(current_child));
+        }
+        else if (strcmp(current_name, "numberOfHunts") == 0) {
+            to_return.num_hunt_bells = std::stoi((const char*) xmlNodeGetContent(current_child));
+        }
+        //TODO: change this to instantiating an actual row, rather than just a string
+        else if (strcmp(current_name, "leadHead") == 0) {
+            to_return.lead_head = (const char*) xmlNodeGetContent(current_child);
+        }
+        else if (strcmp(current_name, "leadHeadCode") == 0) {
+            to_return.lead_head_code = (const char*) xmlNodeGetContent(current_child);
+        }
+        current_child = current_child->next;
+    }
+
+    result_node = xpath_result->nodesetval->nodeTab[0];
+    num_children = xmlChildElementCount(result_node);
+    result_children = result_node->children;
+    current_child = result_children->next;
+    // set method-specific properties and perform necessary overrides using method information
+    for (int i=0; i<num_children; i++) {
+        while (current_child->type != XML_ELEMENT_NODE) {
+            current_child = current_child->next;
+        }
+        // set properties of the return struct
+        const char* current_name = (const char*) current_child->name;
+        if (strcmp(current_name, "title") == 0) {
+            to_return.title = (const char*) xmlNodeGetContent(current_child);
+        }
+        else if (strcmp(current_name, "stage") == 0) {
+            // need to get this from the methodSet
+            to_return.stage = std::stoi((const char*) xmlNodeGetContent(current_child));
+        }
+        else if (strcmp(current_name, "classification") == 0) {
+            // if a property is there, it's only because it's true, I hope!
+            to_return.little = (xmlGetProp(current_child, BAD_CAST "little") != NULL);
+            to_return.differential = (xmlGetProp(current_child, BAD_CAST "differential") != NULL);
+            to_return.plain = (xmlGetProp(current_child, BAD_CAST "plain") != NULL);
+            to_return.treble_dodging = (xmlGetProp(current_child, BAD_CAST "trebleDodging") != NULL);
+            to_return.classification = StringToMethodClass((const char*) xmlNodeGetContent(current_child));
+        }
+        else if (strcmp(current_name, "notation") == 0) {
+            to_return.place_notation = (const char*) xmlNodeGetContent(current_child);
+        }
+        else if (strcmp(current_name, "lengthOfLead") == 0) {
+            // this is not guaranteed
+            to_return.lead_length = std::stoi((const char*) xmlNodeGetContent(current_child));
+        }
+        else if (strcmp(current_name, "numberOfHunts") == 0) {
+            to_return.num_hunt_bells = std::stoi((const char*) xmlNodeGetContent(current_child));
+        }
+        //TODO: change this to instantiating an actual row, rather than just a string
+        else if (strcmp(current_name, "leadHead") == 0) {
+            to_return.lead_head = (const char*) xmlNodeGetContent(current_child);
+        }
+        else if (strcmp(current_name, "leadHeadCode") == 0) {
+            to_return.lead_head_code = (const char*) xmlNodeGetContent(current_child);
+        }
+        current_child = current_child->next;
+    }
+
+    // Clean up and return
+    xmlXPathFreeObject(xpath_result);
+    xmlXPathFreeObject(methodSet_properties);
+    xmlXPathFreeContext(xp_context);
+    return to_return;
+}
+
 
 void MethodLibrary::UpdateLibrary(string file_location, string temp_location) {
     if (temp_location.empty()) {

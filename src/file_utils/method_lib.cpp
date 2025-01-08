@@ -135,6 +135,37 @@ MethodLibrary::~MethodLibrary() {
 }
 
 
+string MethodLibrary::RetrieveLibraryDate() {
+    // open the xml file for searching
+    xmlXPathContextPtr xp_context = xmlXPathNewContext(library_ptr);
+    if (xp_context == NULL) {
+        xmlXPathFreeContext(xp_context);
+        throw MethodLibrarySearchError();
+    }
+    if (xmlXPathRegisterNs(xp_context, BAD_CAST "df", BAD_CAST "http://www.cccbr.org.uk/methods/schemas/2007/05/methods") != 0) {
+        xmlXPathFreeContext(xp_context);
+        throw MethodLibrarySearchError();
+    }
+
+    // retrieve the method node using method id
+    string xpath_expression = "/df:collection";
+    xmlXPathObjectPtr xpath_result = xmlXPathEvalExpression(BAD_CAST xpath_expression.c_str(), xp_context);
+    if (xpath_result == NULL) {
+        fprintf(stderr, "XPath error, NULL returned.\n");
+        xmlXPathFreeObject(xpath_result);
+        xmlXPathFreeContext(xp_context);
+        throw MethodLibrarySearchError();
+    }
+    xmlNodePtr result_node = xpath_result->nodesetval->nodeTab[0];
+    string date = (const char*) xmlGetProp(result_node, BAD_CAST "date");
+
+    xmlXPathFreeObject(xpath_result);
+    xmlXPathFreeContext(xp_context);
+
+    return date;
+}
+
+
 std::list<MethodSearchResult> MethodLibrary::SearchLibrary(string partial_method_name, int stage, MethodClass method_class) {
     // Create xpath evaluation context (maybe save this context each time instead? even if )
     xmlXPathContextPtr xp_context = xmlXPathNewContext(library_ptr);

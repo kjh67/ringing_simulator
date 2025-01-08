@@ -28,6 +28,8 @@ class MethodLibrary {
         MethodLibrary(string library_path);
         ~MethodLibrary();
 
+        string RetrieveLibraryDate();
+
         /**
          * @brief Returns basic identifying information about methods from the library matching the search parameters.
          * 

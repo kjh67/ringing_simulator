@@ -18,6 +18,7 @@ add_library(
     ringing_utils 
     src/ringing_utils/comp.cpp
     src/ringing_utils/method.cpp
+    src/ringing_utils/change.cpp
     src/ringing_utils/row.cpp
     src/ringing_utils/touch.cpp
 )

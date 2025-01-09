@@ -23,6 +23,7 @@ FetchContent_MakeAvailable(googletest)
 add_executable(
     liris_tests
     ringing_utils/row.test.cc
+    ringing_utils/method.test.cc
     file_utils/method_lib.test.cc
 )
 

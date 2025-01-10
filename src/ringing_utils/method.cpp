@@ -231,78 +231,152 @@ int BellSymbolToInt(char bell_symbol) {
     else if (bell_symbol == '0') {
         return 10;
     }
-    else if (bell_symbol == 'E') {
+    else if (bell_symbol == 'E' || bell_symbol == 'e') {
         return 11;
     }
-    else if (bell_symbol == 'T') {
+    else if (bell_symbol == 'T' || bell_symbol == 't') {
         return 12;
     }
-    else if (bell_symbol == 'A') {
+    else if (bell_symbol == 'A' || bell_symbol == 'a') {
         return 13;
     }
-    else if (bell_symbol == 'B') {
+    else if (bell_symbol == 'B' || bell_symbol == 'b') {
         return 14;
     }
-    else if (bell_symbol == 'C') {
+    else if (bell_symbol == 'C' || bell_symbol == 'c') {
         return 15;
     } 
-    else if (bell_symbol == 'D') {
+    else if (bell_symbol == 'D' || bell_symbol == 'd') {
         return 16;
     }
-    else if (bell_symbol == 'F') {
+    else if (bell_symbol == 'F' || bell_symbol == 'f') {
         return 17;
     }
-    else if (bell_symbol == 'G') {
+    else if (bell_symbol == 'G' || bell_symbol == 'g') {
         return 18;
     }
-    else if (bell_symbol == 'H') {
+    else if (bell_symbol == 'H' || bell_symbol == 'h') {
         return 19;
     }
-    else if (bell_symbol == 'J') {
+    else if (bell_symbol == 'J' || bell_symbol == 'j') {
         return 20;
     }
-    else if (bell_symbol == 'K') {
+    else if (bell_symbol == 'K' || bell_symbol == 'k') {
         return 21;
     }
-    else if (bell_symbol == 'L') {
+    else if (bell_symbol == 'L' || bell_symbol == 'l') {
         return 22;
     }
-    else if (bell_symbol == 'M') {
+    else if (bell_symbol == 'M' || bell_symbol == 'm') {
         return 23;
     }
-    else if (bell_symbol == 'N') {
+    else if (bell_symbol == 'N' || bell_symbol == 'n') {
         return 24;
     }
-    else if (bell_symbol == 'P') {
+    else if (bell_symbol == 'P' || bell_symbol == 'p') {
         return 25;
     }
-    else if (bell_symbol == 'Q') {
+    else if (bell_symbol == 'Q' || bell_symbol == 'q') {
         return 26;
     }
-    else if (bell_symbol == 'R') {
+    else if (bell_symbol == 'R' || bell_symbol == 'r') {
         return 27;
     }
-    else if (bell_symbol == 'S') {
+    else if (bell_symbol == 'S' || bell_symbol == 's') {
         return 28;
     }
-    else if (bell_symbol == 'U') {
+    else if (bell_symbol == 'U' || bell_symbol == 'u') {
         return 29;
     }
-    else if (bell_symbol == 'V') {
+    else if (bell_symbol == 'V' || bell_symbol == 'v') {
         return 30;
     }
-    else if (bell_symbol == 'W') {
+    else if (bell_symbol == 'W' || bell_symbol == 'w') {
         return 31;
     }
-    else if (bell_symbol == 'Y') {
+    else if (bell_symbol == 'Y' || bell_symbol == 'y') {
         return 32;
     }
-    else if (bell_symbol == 'Z') {
+    else if (bell_symbol == 'Z' || bell_symbol == 'z') {
         return 33;
     }
     else {
         fprintf(stderr, "Not a valid bell symbol\n");
         throw PlaceNotationError();
+    }
+}
+char IntToBellSymbol(int bell_number) {
+    switch (bell_number)
+    {
+    case 1:
+        return '1';
+    case 2:
+        return '2';
+    case 3:
+        return '3';
+    case 4:
+        return '4';
+    case 5:
+        return '5';
+    case 6:
+        return '6';
+    case 7:
+        return '7';
+    case 8:
+        return '8';
+    case 9:
+        return '9';
+    case 10:
+        return '0';
+    case 11:
+        return 'E';
+    case 12:
+        return 'T';
+    case 13:
+        return 'A';
+    case 14:
+        return 'B';
+    case 15:
+        return 'C';
+    case 16:
+        return 'D';
+    case 17:
+        return 'F';
+    case 18:
+        return 'G';
+    case 19:
+        return 'H';
+    case 20:
+        return 'J';
+    case 21:
+        return 'K';
+    case 22:
+        return 'L';
+    case 23:
+        return 'M';
+    case 24:
+        return 'N';
+    case 25:
+        return 'P';
+    case 26:
+        return 'Q';
+    case 27:
+        return 'R';
+    case 28:
+        return 'S';
+    case 29:
+        return 'U';
+    case 30:
+        return 'V';
+    case 31:
+        return 'W';
+    case 32:
+        return 'Y';
+    case 33:
+        return 'Z';
+    default:
+        fprintf(stderr, "No representation exists for bell %d\n", bell_number);
+        throw;
     }
 }
 

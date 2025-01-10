@@ -320,9 +320,8 @@ Method MethodLibrary::RetrieveMethodInformation(string method_id) {
         else if (strcmp(current_name, "numberOfHunts") == 0) {
             to_return.num_hunt_bells = std::stoi((const char*) xmlNodeGetContent(current_child));
         }
-        //TODO: change this to instantiating an actual row, rather than just a string
         else if (strcmp(current_name, "leadHead") == 0) {
-            to_return.lead_head = (const char*) xmlNodeGetContent(current_child);
+            to_return.lead_head = Row(to_return.stage, (const char*) xmlNodeGetContent(current_child));
         }
         else if (strcmp(current_name, "leadHeadCode") == 0) {
             to_return.lead_head_code = (const char*) xmlNodeGetContent(current_child);
@@ -366,9 +365,8 @@ Method MethodLibrary::RetrieveMethodInformation(string method_id) {
         else if (strcmp(current_name, "numberOfHunts") == 0) {
             to_return.num_hunt_bells = std::stoi((const char*) xmlNodeGetContent(current_child));
         }
-        //TODO: change this to instantiating an actual row, rather than just a string
         else if (strcmp(current_name, "leadHead") == 0) {
-            to_return.lead_head = (const char*) xmlNodeGetContent(current_child);
+            to_return.lead_head = Row(to_return.stage, (const char*) xmlNodeGetContent(current_child));
         }
         else if (strcmp(current_name, "leadHeadCode") == 0) {
             to_return.lead_head_code = (const char*) xmlNodeGetContent(current_child);

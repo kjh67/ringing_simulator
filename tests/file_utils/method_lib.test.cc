@@ -40,6 +40,6 @@ TEST(FILEUTILS, METHODLIBRARY_RETRIEVETEST) {
     method_id = "m10777";
     Method m = lib.RetrieveMethodInformation(method_id);
     fprintf(stdout,"Name: %s\nStage: %d\nClassification: %s\nPlace Notation: %s\nLead Length: %d\nLead Head: %s\n",
-        m.title.c_str(), m.stage, MethodClassToString(m.classification).c_str(), m.place_notation.c_str(), m.lead_length, m.lead_head.c_str());
+        m.title.c_str(), m.stage, MethodClassToString(m.classification).c_str(), m.place_notation.c_str(), m.lead_length, m.lead_head.ToString().c_str());
     ASSERT_EQ(strcmp(m.title.c_str(), "Rutland Branch Bob Doubles"), 0);
 }

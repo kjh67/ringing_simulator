@@ -24,6 +24,7 @@ add_executable(
     liris_tests
     ringing_utils/row.test.cc
     ringing_utils/method.test.cc
+    ringing_utils/composition.test.cc
     file_utils/method_lib.test.cc
 )
 

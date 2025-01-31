@@ -82,18 +82,33 @@ struct Method
 };
 
 
-class Composition
-{
-    public:
-        //methods
+enum CompositionType { STANDARD=0, RANDOM }; // add support for random later
+
+struct CompositionComponent { 
+    Change change;
+    string call; 
+
+    CompositionComponent(Change c): change(c) {};    
 };
 
-
-class Touch
+struct Composition
 {
-    public:
-        //methods
-        Row next_row();
+    CompositionType composition_type = STANDARD;
+    bool backstroke_start = false;
+
+    // no default constructor
+    // how to make call-place comps method agnostic? store a comp type and
+    // then allow a method replacement?
+    // STORE the compositions in a way which allows the methods to be switched when
+    // the composition is properly 'loaded'
+
+    std::vector<CompositionComponent> changes;
+    int number_of_changes;
+    int stage; // max stage used during composition
+
+    // special constructors for plain course and plain lead of a method
+    static Composition PlainLead(Method method);
+    static Composition PlainCourse(Method method);
 };
 
 }

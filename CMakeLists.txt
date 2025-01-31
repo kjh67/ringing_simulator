@@ -16,7 +16,7 @@ find_package(LIBZIP REQUIRED IMPORTED_TARGET libzip)
 # Ringing Utils setup
 add_library(
     ringing_utils 
-    src/ringing_utils/comp.cpp
+    src/ringing_utils/composition.cpp
     src/ringing_utils/method.cpp
     src/ringing_utils/change.cpp
     src/ringing_utils/row.cpp

@@ -20,7 +20,6 @@ add_library(
     src/ringing_utils/method.cpp
     src/ringing_utils/change.cpp
     src/ringing_utils/row.cpp
-    src/ringing_utils/touch.cpp
 )
 
 # File utils setup

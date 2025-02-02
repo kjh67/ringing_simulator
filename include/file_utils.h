@@ -1,3 +1,6 @@
+#ifndef FILEUTIL_H
+#define FILEUTIL_H
+
 #include "ringing_utils.h"
 #include <libxml/parser.h>
 #include <string>
@@ -8,6 +11,7 @@ using namespace ringing_utils;
 
 namespace file_utils {
 
+// Importing compositions etc from Abel mcf files
 class MCFFile {};
 
 
@@ -48,4 +52,10 @@ class MethodLibraryLoadError {};
 class MethodLibrarySearchError {};
 class MethodLibraryUpdateError {};
 
+
+// Retrieving compositions from complib
+Composition GetCompositionFromComplib(string comp_reference);
+
 }
+
+#endif

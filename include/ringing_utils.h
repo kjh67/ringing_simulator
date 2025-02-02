@@ -1,3 +1,6 @@
+#ifndef RINGUTIL_H
+#define RINGUTIL_H
+
 #include <string>
 #include <vector>
 
@@ -112,3 +115,5 @@ struct Composition
 };
 
 }
+
+#endif
